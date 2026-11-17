@@ -2,7 +2,7 @@
 
 CityRoute is an open-source last-mile urban routing, multi-stop delivery optimization (VRP), and multi-driver dispatch platform built with **FastAPI**, **NetworkX / OSMnx**, **Redis**, and **React + Leaflet**.
 
-Live:- https://cityroute-demo-v3-final.onrender.com
+Live:- https://cityroute-demo-v3-final.onrender.com (Suspended currently. As you know need money to keep it running. LOL! but enough to show case my skills.)
 
 It provides both:
 1. **Product Workspace** — Interactive map-based workflows for:
