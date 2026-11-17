@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from importlib import import_module
 import math
+from importlib import import_module
 from pathlib import Path
 from typing import Any
 
@@ -170,10 +170,7 @@ def haversine_m(lat_a: float, lon_a: float, lat_b: float, lon_b: float) -> float
     lon2 = math.radians(lon_b)
     dlat = lat2 - lat1
     dlon = lon2 - lon1
-    hav = (
-        math.sin(dlat / 2.0) ** 2
-        + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2.0) ** 2
-    )
+    hav = math.sin(dlat / 2.0) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2.0) ** 2
     return 2.0 * EARTH_RADIUS_M * math.asin(min(1.0, math.sqrt(hav)))
 
 

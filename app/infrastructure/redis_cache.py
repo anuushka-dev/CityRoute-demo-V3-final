@@ -84,14 +84,10 @@ class RedisCache:
     ) -> None:
         self.redis_url = redis_url or settings.redis_url
         self.ttl_seconds = (
-            int(ttl_seconds)
-            if ttl_seconds is not None
-            else int(settings.matrix_cache_ttl_seconds)
+            int(ttl_seconds) if ttl_seconds is not None else int(settings.matrix_cache_ttl_seconds)
         )
         self.socket_timeout_s = (
-            socket_timeout_s
-            if socket_timeout_s is not None
-            else settings.redis_socket_timeout_s
+            socket_timeout_s if socket_timeout_s is not None else settings.redis_socket_timeout_s
         )
         self.backend_mode: str = "redis_tcp"
         self._allow_memory_fallback: bool = False
@@ -189,7 +185,6 @@ class RedisCache:
                 return bool(self._fallback_to_memory().exists(key))
             raise
 
-    
     def status_summary(self) -> dict[str, Any]:
         try:
             healthy = self.ping()
@@ -201,12 +196,9 @@ class RedisCache:
         return {
             "healthy": healthy,
             "backend_mode": self.backend_mode,
-            "in_memory_fallback_enabled": bool(
-                getattr(settings, "redis_in_memory_fallback", True)
-            ),
+            "in_memory_fallback_enabled": bool(getattr(settings, "redis_in_memory_fallback", True)),
             "in_memory_keys": memory_stats["keys"],
         }
-
 
     def close(self) -> None:
         try:

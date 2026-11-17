@@ -18,7 +18,9 @@ class Settings(BaseSettings):
     external_routing_api_key: str = ""
     map_api_key: str = ""
     map_tile_url: str = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-    map_attribution: str = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    map_attribution: str = (
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    )
     cors_allowed_origins: str = "*"
 
     data_dir: Path = Path("data")
@@ -136,7 +138,7 @@ class Settings(BaseSettings):
     )
 
     @model_validator(mode="after")
-    def validate_configuration(self) -> "Settings":
+    def validate_configuration(self) -> Settings:
         if self.bbox_north <= self.bbox_south:
             raise ValueError("bbox_north must be greater than bbox_south.")
 

@@ -948,7 +948,9 @@ async def compute_vrp_compare(
             trace_items.append(
                 {
                     "iteration": int(raw_item.get("iteration", len(trace_items))),
-                    "distance_m": round(float(raw_item.get("distance_m", two_opt_result.optimized_distance_m)), 3),
+                    "distance_m": round(
+                        float(raw_item.get("distance_m", two_opt_result.optimized_distance_m)), 3
+                    ),
                     "improved": bool(raw_item.get("improved", False)),
                     "swap_i": raw_item.get("swap_i"),
                     "swap_j": raw_item.get("swap_j"),

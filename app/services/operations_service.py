@@ -8,11 +8,9 @@ from starlette.concurrency import run_in_threadpool
 
 from app.core.lns import large_neighborhood_search
 from app.core.two_opt import two_optimize
-from app.services.vrp_advanced_compare_service import _nearest_neighbor_order
 from app.models.matrix_model import MatrixRequest
 from app.schemas.dispatch import (
     DispatchCompareRequest,
-    DispatchDriverRequest,
     DispatchOrderRequest,
 )
 from app.schemas.operations import (
@@ -29,6 +27,7 @@ from app.services.dispatch_service import (
 )
 from app.services.matrix_service import build_distance_matrix_response
 from app.services.routing_service import compute_route
+from app.services.vrp_advanced_compare_service import _nearest_neighbor_order
 from app.utils.geo_validation import validate_coordinates
 
 logger = logging.getLogger(__name__)
@@ -73,21 +72,14 @@ async def build_operations_plan(
     )
     dispatch_time_ms = round((perf_counter() - dispatch_start) * 1000.0, 3)
 
-    order_by_id: dict[str, DispatchOrderRequest] = {
-        o.order_id: o for o in payload.orders
-    }
+    order_by_id: dict[str, DispatchOrderRequest] = {o.order_id: o for o in payload.orders}
     driver_assigned_map: dict[str, list[DispatchOrderRequest]] = {
         d.driver_id: [] for d in payload.drivers
     }
 
     for assignment in dispatch_response.hungarian.assignments:
-        if (
-            assignment.driver_id in driver_assigned_map
-            and assignment.order_id in order_by_id
-        ):
-            driver_assigned_map[assignment.driver_id].append(
-                order_by_id[assignment.order_id]
-            )
+        if assignment.driver_id in driver_assigned_map and assignment.order_id in order_by_id:
+            driver_assigned_map[assignment.driver_id].append(order_by_id[assignment.order_id])
 
     driver_plans: list[OperationsDriverPlanResponse] = []
     total_fleet_distance_m = 0.0
@@ -165,8 +157,7 @@ async def build_operations_plan(
 
             raw_matrix = getattr(matrix_resp, "matrix_distance_m", None) or []
             distance_matrix = [
-                [float(cell) if cell is not None else -1.0 for cell in row]
-                for row in raw_matrix
+                [float(cell) if cell is not None else -1.0 for cell in row] for row in raw_matrix
             ]
 
             greedy_order = _nearest_neighbor_order(
@@ -196,9 +187,7 @@ async def build_operations_plan(
                     chosen_order = [m_idx - 1 for m_idx in lns_sol.optimized_order]
 
             ordered_orders = [
-                assigned_orders[idx]
-                for idx in chosen_order
-                if 0 <= idx < len(assigned_orders)
+                assigned_orders[idx] for idx in chosen_order if 0 <= idx < len(assigned_orders)
             ]
 
         driver_opt_ms = round((perf_counter() - opt_start) * 1000.0, 3)
@@ -237,8 +226,7 @@ async def build_operations_plan(
                 seg_time_ms = float(route_res.get("route_time_ms", 0.0))
                 raw_geom = route_res.get("geometry") or []
                 seg_geom = [
-                    Coordinate(lat=float(pt["lat"]), lon=float(pt["lon"]))
-                    for pt in raw_geom
+                    Coordinate(lat=float(pt["lat"]), lon=float(pt["lon"])) for pt in raw_geom
                 ]
             except Exception as exc:
                 logger.warning(

@@ -11,7 +11,7 @@ from app.utils.graphio import haversine_m
 EARTH_RADIUS_M = 6_371_000.0
 SnapMethod = Literal["balltree", "linear_fallback"]
 
-_SNAP_INDEX_CACHE: dict[tuple[int, int], "SnapIndex"] = {}
+_SNAP_INDEX_CACHE: dict[tuple[int, int], SnapIndex] = {}
 
 
 class SnappedCoordinate(TypedDict):
@@ -130,10 +130,7 @@ def _query_position(
 
     dlat = node_lat - lat1
     dlon = node_lon - lon1
-    hav = (
-        np.sin(dlat / 2.0) ** 2
-        + np.cos(lat1) * np.cos(node_lat) * (np.sin(dlon / 2.0) ** 2)
-    )
+    hav = np.sin(dlat / 2.0) ** 2 + np.cos(lat1) * np.cos(node_lat) * (np.sin(dlon / 2.0) ** 2)
     distances_rad = 2.0 * np.arcsin(np.minimum(1.0, np.sqrt(hav)))
     nearest_pos = int(np.argmin(distances_rad))
     snap_distance_m = float(distances_rad[nearest_pos] * EARTH_RADIUS_M)

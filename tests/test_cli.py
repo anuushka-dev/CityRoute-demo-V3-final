@@ -6,15 +6,24 @@ import unittest
 from contextlib import redirect_stdout
 from unittest.mock import patch
 
-from app.cli import build_parser, build_url, main, _read_json_body
+from app.cli import _read_json_body, build_parser, build_url, main
 
 
 class TestCityRouteCli(unittest.TestCase):
     def test_default_route(self):
-        args = build_parser().parse_args([
-            "route", "--start-lat", "26.46", "--start-lon", "80.32",
-            "--end-lat", "26.47", "--end-lon", "80.34"
-        ])
+        args = build_parser().parse_args(
+            [
+                "route",
+                "--start-lat",
+                "26.46",
+                "--start-lon",
+                "80.32",
+                "--end-lat",
+                "26.47",
+                "--end-lon",
+                "80.34",
+            ]
+        )
         self.assertEqual(args.path, "/route")
         self.assertEqual(args.start_lat, 26.46)
 

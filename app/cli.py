@@ -18,7 +18,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
-
 DEFAULT_URL = "http://127.0.0.1:8010"
 
 
@@ -33,11 +32,14 @@ def _add_http_options(parser: argparse.ArgumentParser) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="cityroute", description="CityRoute command line — run and query your local routing API."
+        prog="cityroute",
+        description="CityRoute command line — run and query your local routing API.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
-    serve = sub.add_parser("serve", help="Start the FastAPI backend (requires project dependencies)")
+    serve = sub.add_parser(
+        "serve", help="Start the FastAPI backend (requires project dependencies)"
+    )
     serve.add_argument("--host", default="127.0.0.1", help="Bind address (default: 127.0.0.1)")
     serve.add_argument("--port", type=int, default=8010, help="HTTP port (default: 8010)")
     serve.add_argument("--reload", action="store_true", help="Reload on source changes")
@@ -105,7 +107,10 @@ def request_json(url: str, *, method: str, body: bytes | None, timeout: float) -
         url,
         data=body,
         method=method,
-        headers={"Accept": "application/json", **({"Content-Type": "application/json"} if body else {})},
+        headers={
+            "Accept": "application/json",
+            **({"Content-Type": "application/json"} if body else {}),
+        },
     )
     with urlopen(request, timeout=timeout) as response:
         content = response.read().decode("utf-8")
@@ -125,7 +130,10 @@ def main(argv: list[str] | None = None) -> int:
         try:
             import uvicorn
         except ImportError:
-            print("Install project dependencies first: python -m pip install -r requirements.txt", file=sys.stderr)
+            print(
+                "Install project dependencies first: python -m pip install -r requirements.txt",
+                file=sys.stderr,
+            )
             return 1
         uvicorn.run("app.main:app", host=args.host, port=args.port, reload=args.reload)
         return 0

@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import asyncio
+import time
 from collections.abc import Sequence
 from contextlib import asynccontextmanager
 from time import perf_counter
-import time
 from typing import Any
 
 from fastapi import FastAPI, Request
@@ -477,7 +477,9 @@ async def lifespan(
         app.state.graph_stats["redis_backend_mode"] = redis_cache.backend_mode
 
     if redis_available:
-        logger.info("Redis cache is available (mode=%s)", getattr(redis_cache, "backend_mode", "redis"))
+        logger.info(
+            "Redis cache is available (mode=%s)", getattr(redis_cache, "backend_mode", "redis")
+        )
     else:
         logger.warning(
             "Redis cache is unavailable; fail_open=%s",
@@ -663,9 +665,7 @@ app = FastAPI(
 )
 
 cors_origins = [
-    origin.strip()
-    for origin in settings.cors_allowed_origins.split(",")
-    if origin.strip()
+    origin.strip() for origin in settings.cors_allowed_origins.split(",") if origin.strip()
 ] or ["*"]
 
 app.add_middleware(
