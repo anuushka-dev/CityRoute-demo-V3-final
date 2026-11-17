@@ -2,7 +2,7 @@ function parseLabels(raw) {
     if (!raw)
         return {};
     const labels = {};
-    for (const match of raw.matchAll(/([a-zA-Z_][a-zA-Z0-9_]*)="((?:\\.|[^"])*)"/g)) {
+    for (const match of raw.matchAll(/([a-zA-Z_][a-zA-Z0-9_]*)="((?:\\.|[^"\\])*)"/g)) {
         labels[match[1]] = match[2].replace(/\\"/g, '"').replace(/\\\\/g, '\\');
     }
     return labels;
